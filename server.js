@@ -19,7 +19,7 @@ app.use('/menuitems', menuRoutes);
 import personRoutes from './routes/personRoutes.js';
 app.use('/person',personRoutes);
 
-
+//use environment variable for port
 const PORT=process.env.PORT||3000;
 db.on('connected',()=>{
   console.log("db connected starting server");
