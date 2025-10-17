@@ -1,29 +1,36 @@
-// server.js
 import express from 'express';
+import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
-import db from './db.js';
-import Person from './models/person.js'; 
-import menuitems from './models/menuitems.js';
+import passport from './auth.js';
+import db from './db.js';  // 👈 make sure db.js is ESM too
+import personRoutes from './routes/personRoutes.js';
+import menuItemRoutes from './routes/menuItemRoutes.js';
 
 const app = express();
+dotenv.config();
 
-app.use(bodyParser.json()); 
+app.use(bodyParser.json()); // req.body
+
+const PORT = process.env.PORT || 3000;
+
+// Middleware Function
+const logRequest = (req, res, next) => {
+  console.log(`[${new Date().toLocaleString()}] Request Made to : ${req.originalUrl}`);
+  next(); // Move on to the next phase
+};
+app.use(logRequest);
+
+app.use(passport.initialize());
+const localAuthMiddleware = passport.authenticate('local', { session: false });
 
 app.get('/', (req, res) => {
-  res.send('Welcome to my app...');
+  res.send('Welcome to our Hotel');
 });
 
+// Use the routers
+app.use('/person', personRoutes);
+app.use('/menu', menuItemRoutes);
 
-import menuRoutes from './routes/menuitemRoutes.js';
-app.use('/menuitems', menuRoutes);
-import personRoutes from './routes/personRoutes.js';
-app.use('/person',personRoutes);
-
-//use environment variable for port
-const PORT=process.env.PORT||3000;
-db.on('connected',()=>{
-  console.log("db connected starting server");
 app.listen(PORT, () => {
-  console.log('LISTENING ON port ');
-});
+  console.log(`Listening on port ${PORT}`);
 });

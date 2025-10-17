@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
 
-//const mongoURL = 'mongodb://127.0.0.1:27017/hotels';
+//const mongoURL = process.env.DB_URL_LOCAL;
 const mongoURL = process.env.DB_URL; 
 
 // ✅ Just call connect without extra options
